@@ -22,4 +22,12 @@ dfx identity use codespace_dev
 dfx start --background             
 dfx stop
 
+# Set up Fetch Uagents
+apt install -y python3-pip
+apt install -y python3-venv
+apt install -y python3-ensurepip
+python3 -m venv .venv
+source .venv/bin/activate
+pip install uagents
+
 echo "✅ Devcontainer setup complete!"

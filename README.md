@@ -28,6 +28,17 @@ The ICP component (`ic/src/backend/index.ts`) implements a dummy HTTP server wit
 
 Note: This is a dummy implementation that returns mock data. The actual implementation needs to be amended.
 
+You can call from the command line:
+Local:
+
+- curl http://[canisterId].raw.localhost:4943/
+- curl -X POST -H "Content-Type: application/json" -d "{ \"address\": \"[BTC Address]\" }" http://[canisterId].raw.localhost:4943/get-balance (it only works on Mainnet)
+
+IC:
+
+- curl https://[canisterId].icp0.io/
+- curl -X POST -H "Content-Type: application/json" -d "{ \"address\": \"[BTC Address]\" }" https://[canisterId].icp0.io/get-balance
+
 ---
 
 ## IC Component
@@ -86,7 +97,7 @@ To use the agent, you need an ASI:One API Key. Follow these steps:
    ```python
    ASI1_API_KEY = "YOUR_ASI1_API_KEY"  # Replace with your ASI1 key
    ```
-8. Copy the cannister ID after deploying and replace the cannister ID in the `agent.py` file. 
+8. Copy the cannister ID after deploying and replace the cannister ID in the `agent.py` file.
 
    ```bash
    Deployed canisters.
@@ -99,7 +110,9 @@ To use the agent, you need an ASI:One API Key. Follow these steps:
    CANISTER_ID = "uzt4z-lp777-77774-qaabq-cai"
    BASE_URL = "http://127.0.0.1:4943"
    ```
-9. 
+
+9.
+
 ### Running the Agent
 
 1. In a separate terminal, start the agent:
@@ -123,7 +136,6 @@ INFO: [test-ICP-agent]: Agent inspector available at https://agentverse.ai/inspe
 ![Mailbox done](./fetch/images/mailbox-done.png)
 
 4. Test the agent using the Chat interface with queries like:
-
    - Once connected, click on Agent Profile
      ![Agent Profile](./fetch/images/agent-profile.png)
 
@@ -134,7 +146,7 @@ INFO: [test-ICP-agent]: Agent inspector available at https://agentverse.ai/inspe
      ![Type Query](./fetch/images/chat-ui.png)
 
    - Query through ASI:One
-      ![Type Query](./fetch/images/asi1.png)
+     ![Type Query](./fetch/images/asi1.png)
 
 ## Example Queries
 

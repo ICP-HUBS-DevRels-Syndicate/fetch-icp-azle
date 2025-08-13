@@ -22,6 +22,9 @@ dfx identity use codespace_dev
 dfx start --background             
 dfx stop
 
+# Fix missing pkill on dfx build
+apt-get install -y procps
+
 # Set up Fetch Uagents
 apt install -y python3-pip
 apt install -y python3-venv

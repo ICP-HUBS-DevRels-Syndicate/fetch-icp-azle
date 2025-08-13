@@ -1,5 +1,10 @@
-import { bitcoin_network } from "azle/canisters/management/idl";
-import { jsonStringify } from "azle/experimental";
+import {
+  bitcoin_network,
+  bitcoin_get_balance_args,
+  satoshi,
+  bitcoin_get_balance_result,
+} from "azle/canisters/management/idl";
+import { call, Principal } from "azle";
 import express, { Request } from "express";
 
 // Dummy values instead of real Bitcoin interactions
@@ -10,23 +15,63 @@ const KEY_NAME: string = "test_key_1";
 const app = express();
 app.use(express.json());
 
-/// Dummy: Returns the balance of a given Bitcoin address.
+/// Returns a welcome message to test if the API is working.
 app.get("/", async (req: Request, res) => {
   const welcomeMessage = {
-    message: "Welcome to the Dummy Bitcoin Canister API",
+    message: "Welcome to the Bitcoin Canister API",
   };
   res.json(welcomeMessage);
 });
 
-/// Dummy: Returns the balance of a given Bitcoin address.
+/// Returns the actual balance of a given Bitcoin address using ICP Chain Fusion.
+/// NOTE: service only available on Mainnet (dfx deploy --ic).
 app.post("/get-balance", async (req: Request, res) => {
-  const { address } = req.body;
-  const dummyBalance = {
-    address: address,
-    balance: 0.005, // in BTC
-    unit: "BTC",
-  };
-  res.json(dummyBalance);
+  try {
+    const { address } = req.body;
+
+    if (!address) {
+      return res.status(400).json({
+        error: "Address is required",
+      });
+    }
+
+    // Prepare arguments for the management canister call
+    const args: bitcoin_get_balance_args = {
+      address: address,
+      network: NETWORK,
+      min_confirmations: [], // Optional: use default confirmations
+    };
+
+    // Call the management canister to get the actual Bitcoin balance
+    const balanceInSatoshi: satoshi = await call(
+      Principal.fromText("aaaaa-aa"),
+      "bitcoin_get_balance",
+      {
+        args: [args],
+        paramIdlTypes: [bitcoin_get_balance_args],
+        returnIdlType: satoshi,
+      },
+    );
+
+    // Convert satoshi to BTC (1 BTC = 100,000,000 satoshi)
+    const balanceInBTC = Number(balanceInSatoshi) / 100_000_000;
+
+    const response = {
+      address: address,
+      balance: balanceInBTC,
+      balanceInSatoshi: Number(balanceInSatoshi),
+      unit: "BTC",
+      network: NETWORK,
+    };
+
+    res.json(response);
+  } catch (error: any) {
+    console.error("Error getting Bitcoin balance:", error);
+    res.status(500).json({
+      error: "Failed to get Bitcoin balance",
+      message: error.message || "Unknown error occurred",
+    });
+  }
 });
 
 /// Dummy: Returns the UTXOs of a given Bitcoin address.

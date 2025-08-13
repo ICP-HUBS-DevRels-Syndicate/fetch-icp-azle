@@ -25,7 +25,6 @@ dfx stop
 # Set up Fetch Uagents
 apt install -y python3-pip
 apt install -y python3-venv
-apt install -y python3-ensurepip
 python3 -m venv .venv
 source .venv/bin/activate
 pip install uagents
